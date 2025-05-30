@@ -9,6 +9,12 @@ def load_cometkiwi():
     model = load_from_checkpoint(model_path)
     return model
 
+def load_xcomet():
+    from comet import load_from_checkpoint
+    model_path = "/apdcephfs_gy2/share_303033943/hunyuan/jasonzli/model_zoo/XCOMET-XXL/checkpoints/model.ckpt"
+    model = load_from_checkpoint(model_path)
+    return model
+
 def load_data(input_path):
     data = []
     with open(input_path) as f:
