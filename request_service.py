@@ -89,8 +89,8 @@ def request_hunyuan_model(model_name, wsid, messages, stop=[]):
         "top_p": 0.6,
         "top_k": 20,
         "repetition_penalty": 1.05,
-        "output_seq_len": 1024,
-        "max_input_seq_len": 4096,
+        "output_seq_len": 2048,
+        "max_input_seq_len": 2048,
         "stream": False,
         "stop": stop
     }
@@ -125,6 +125,22 @@ def pretrain_res_to_xcomet(data):
     response = request_xcomet_single(src, mt, ref)
     return response
 
+def request_hy_sft_for_eval(data):
+    model_name = "2B-Dense-Translation-SFT-8k-250214-jason"
+    #model_name = "translate_dpo_7b_dense_v30_0214_fp8"
+    #model_name = "translate_7b_moe_dpo_v30_20250217_jason"
+    #model_name = "translate_dpo_v29"
+    #model_name = "translate_7b_moe_sft_0109"
+    #model_name = "translate_7b_moe_dpo_v32_20250605"
+    wsid = "10316"
+    if "messages" in data:
+        messages = data["messages"]
+    else:
+        #messages = [{"role": "system", "content": "你是一个资深的语言翻译专家"}, {"role": "user", "content": data["question"]}]
+        messages = [{"role": "system", "content": ""}, {"role": "user", "content": data["question"]}]
+    response = request_hunyuan_model(model_name, wsid, messages)
+    return response
+
 class Counter:
     """线程安全的计数器"""
     def __init__(self):
@@ -139,7 +155,9 @@ def worker(data, result_queue, counter):
     try:
         data = json.loads(data)
         #response = request_hy_pretrain(data)
-        response = pretrain_res_to_xcomet(data)
+        #response = pretrain_res_to_xcomet(data)
+        response = request_hy_sft_for_eval(data)
+        #comet = request_xcomet_single(data["origin_text"], data["response"], data["correct_res"])
 
         result = data
         result["response"] = response
