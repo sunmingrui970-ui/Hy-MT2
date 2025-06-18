@@ -32,6 +32,15 @@ def build_input_data(data, src_key, mt_key):
         input_data.append({"src": src, "mt": mt})
     return input_data
 
+def build_input_data_with_ref(data, src_key, mt_key, ref_key):
+    input_data = []
+    for item in data:
+        src = item[src_key]
+        mt = item[mt_key]
+        ref = item[ref_key]
+        input_data.append({"src": src, "mt": mt, "ref": ref})
+    return input_data
+
 def main():
     batch_size = 48
     GPU_NUM = 4
