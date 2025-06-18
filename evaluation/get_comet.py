@@ -6,6 +6,7 @@ import random
 def load_cometkiwi():
     from comet import load_from_checkpoint
     model_path = "/apdcephfs_gy2/share_303033943/hunyuan/jasonzli/model_zoo/wmt23-cometkiwi-da-xxl/checkpoints/model.ckpt"
+    model_path = "/apdcephfs_gy2/share_303033943/hunyuan/jasonzli/model_zoo/wmt23-cometkiwi-da-xl/checkpoints/model.ckpt"
     model = load_from_checkpoint(model_path)
     return model
 
@@ -33,14 +34,14 @@ def build_input_data(data, src_key, mt_key):
 
 def main():
     batch_size = 48
-    GPU_NUM = 1
+    GPU_NUM = 4
     model = load_cometkiwi()
-    input_path = "/apdcephfs_cq8/share_1324356/jasonzli/translation/data/data_buy/10国第二次/ds_v3_output.jsonl"
+    input_path = "/apdcephfs_cq8/share_1324356/jasonzli/translation/data/wmt24/crawl_input/output_gpt4.jsonl"
     data = load_data(input_path)
-    output_path = "/apdcephfs_cq8/share_1324356/jasonzli/translation/data/data_buy/10国第二次/ds_v3_output_cometkiwi_debug.jsonl"
+    output_path = "/apdcephfs_cq8/share_1324356/jasonzli/translation/data/wmt24/crawl_input/output_gpt4_cometkiwi.jsonl"
     fw = open(output_path, "w")
     src_key = "origin_text"
-    mt_key = "answer"
+    mt_key = "model_res"
     input_data = build_input_data(data, src_key, mt_key)
     model_output = model.predict(input_data, batch_size, gpus=GPU_NUM)
     scores = model_output.scores

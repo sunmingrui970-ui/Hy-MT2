@@ -200,8 +200,10 @@ def checklist_check(path):
             answer = j["answer"]
         elif "output" in j:
             answer = j["output"]
-        if answer == "" and "messages" in j:
-            answer = j["messages"][-1]["content"][-1]["value"]
+        elif "response" in j:
+            answer = j["response"]
+        #if answer == "" and "messages" in j:
+        #    answer = j["messages"][-1]["content"][-1]["value"]
         if answer.strip() == "":
             continue
         #text = j['origin_text']

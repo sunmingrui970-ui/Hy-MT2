@@ -41,6 +41,8 @@ def multi_language_data_check(result_path):
             answer = j["hunyuan_output"]
         elif "llama3_8b_instruct" in j:
             answer = j["llama3_8b_instruct"]
+        elif "response" in j:
+            answer = j["response"]
         else:
             continue
         if answer.strip() == "":

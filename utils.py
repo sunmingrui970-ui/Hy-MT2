@@ -1,5 +1,7 @@
 import json
 import random
+import requests
+import hashlib
 
 def load_instruction_list():
     instruction_list = []
@@ -26,3 +28,29 @@ def load_lan_dic():
         lan_dic_reverse[lan_dic[lan]] = lan
 
     return lan_dic, lan_dic_reverse
+
+def call_vllm_model(model, messages, temperature=0.7, **kwargs):
+    headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer EMPTY"
+            }
+    payload = {
+            "model": model,  # Use the provided model parameter
+            'messages': messages,
+            "stream": False,
+            "temperature": temperature
+            }
+    api = "http://29.119.98.85:8081/v1/chat/completions"
+    rsp = requests.post(api, json=payload, headers=headers, timeout=300)
+    return rsp
+
+def gen_pair_md5(_input, _output):
+    data = _input + _output
+    return hashlib.md5(data.encode(encoding='UTF-8')).hexdigest()
+
+if __name__ == "__main__":
+    messages = [{"role": "user", "content": "下面的文本中包含1次k这个数量单位，k在文本中的含义是千，提取出数量单位k及其前面的数字，然后结合上下文把提取文本翻译成中文，不要在翻译结果中增加提取文本中不存在的内容，如果存在多种翻译方式，请全部列举出来。输出json格式的结果，格式为[{\"提取文本\": \"提取的文本\", \"翻译结果\": [\"翻译1\", \"翻译2\", ...]\\}。\n\nThe annual revenue of the company reached 01234567k, showcasing significant growth in the past fiscal year."}]
+    model = "deepseek_v3"
+    rsp = call_vllm_model(model, messages).json()
+    print(rsp)
+    print(rsp["choices"][0]["message"]["content"])

@@ -17,5 +17,5 @@ pip3 install tensorflow
 
 bash enable_internet_proxy.sh
 source ~/.bashrc
-
+pip3 install unbabel-comet
 pip3 install entmax
